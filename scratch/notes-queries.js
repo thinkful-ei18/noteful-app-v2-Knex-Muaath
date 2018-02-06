@@ -1,10 +1,6 @@
+'use strict';
+const knex = require('../knex');
 
-const { DATABASE } = require('../config');
-
-const knex = require('knex')({
-  client: 'pg',
-  connection: {
-      database: 'noteful-app'
-  },
-});
-
+knex('notes')
+.select()
+.then(item => console.log(item));
