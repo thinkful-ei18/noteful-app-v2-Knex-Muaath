@@ -28,6 +28,23 @@ router.get('/notes', (req, res, next) => {
       })
       .then(list => res.json(list))
       .catch(err => next(err));
+
+      knex.select('notes.id', 'title', 'content', 'folder_id', 'folders.name as folder_name')
+      .from('notes')
+      .leftJoin('folders', 'notes.folder_id', 'folders.id')
+      .where(function () {
+        if (searchTerm) {
+          this.where('title', 'like', `%${searchTerm}%`);
+        }
+      })
+      .orderBy('notes.id')
+      .then(results => {
+        res.json(results);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
 });
 
 
