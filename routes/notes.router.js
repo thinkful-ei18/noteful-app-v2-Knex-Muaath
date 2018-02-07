@@ -16,7 +16,7 @@ const notes = simDB.initialize(data);
 // Get All (and search by query)
 /* ========== GET/READ ALL NOTES ========== */
 router.get('/notes', (req, res, next) => {
-  let { searchTerm } = req.query;
+  const searchTerm = req.query.searchTerm ? req.query.searchTerm.toLowerCase() : null;
   if(searchTerm) {
     knex('note')
       .select()
