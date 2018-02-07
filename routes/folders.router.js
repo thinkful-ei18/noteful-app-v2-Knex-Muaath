@@ -64,3 +64,15 @@ router.put('/notes/:id', (req, res, next) => {
     .catch(err => next(err));
   });
 });
+
+router.delete('/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+
+  knex('folders')
+  .where({'id': `${id}`})
+  .del()
+  .then(folder=> res.json(folder))
+  .catch(err => next(err));
+});
+
+module.exports = router;

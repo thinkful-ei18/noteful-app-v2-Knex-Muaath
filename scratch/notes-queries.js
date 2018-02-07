@@ -1,7 +1,7 @@
 'use strict';
 const knex = require('../knex');
-const folderId = 105;
-const name = 'New Folder Name';
+
+const id = 105;
 
 // knex('folders')
 // .where({'id': `${folderId}`})
@@ -11,9 +11,15 @@ const name = 'New Folder Name';
 // })
 // .then(note => console.log(note))
 // .catch(err => console.log(err));
-knex('folders')
-  .select()
-  .then(console.log);
+
+// knex('folders')
+//   .where({'id': `${id}`})
+//   .del()
+//   .then(folder=> console.log(folder))
+//   .catch(err => console.log(err));
+// knex('folders')
+//   .select()
+//   .then(console.log)
 
     knex.destroy().then(() => {
         console.log('database connection closed');

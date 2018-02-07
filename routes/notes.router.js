@@ -16,50 +16,60 @@ const notes = simDB.initialize(data);
 // Get All (and search by query)
 /* ========== GET/READ ALL NOTES ========== */
 router.get('/notes', (req, res, next) => {
-  const { searchTerm } = req.query;
+  const { searchTerm, folderId } = req.query;
 
-  knex('notes')
-      .select('id', 'title', 'content')
-      .where(function () {
-        if (searchTerm) {
-          this.where('title', 'like', `%${searchTerm}%`)
-          .orWhere('content', 'like', `%${searchTerm}%`);
-        }
-      })
-      .then(list => res.json(list))
-      .catch(err => next(err));
+  // knex('notes')
+  //     .select('id', 'title', 'content')
+  //     .where(function () {
+  //       if (searchTerm) {
+  //         this.where('title', 'like', `%${searchTerm}%`)
+  //         .orWhere('content', 'like', `%${searchTerm}%`);
+  //       }
+  //     })
+  //     .then(list => res.json(list))
+  //     .catch(err => next(err));
 
-      knex.select('notes.id', 'title', 'content', 'folder_id', 'folders.name as folder_name')
-      .from('notes')
-      .leftJoin('folders', 'notes.folder_id', 'folders.id')
-      .where(function () {
-        if (searchTerm) {
-          this.where('title', 'like', `%${searchTerm}%`);
-        }
-      })
-      .orderBy('notes.id')
-      .then(results => {
-        res.json(results);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+  knex.select('notes.id', 'title', 'content', 'folder_id', 'folders.name as folder_name')
+  .from('notes')
+  .leftJoin('folders', 'notes.folder_id', 'folders.id')
+  .where(function () {
+    if (searchTerm) {
+      this.where('title', 'like', `%${searchTerm}%`)
+      .orWhere('content', 'like', `%${searchTerm}%`);
+    }
+    if(folderId){
+      if(req.query.folderId){
+        this.where('folder_id', req.query.folderId);
+      }
+
+    }
+  })
+  .orderBy('notes.id')
+  .then(results => {
+    res.json(results);
+  })
+  .catch(err => {
+    console.error(err);
   });
 });
-
-
-
 
 
 /* ========== GET/READ SINGLE NOTES ========== */
 router.get('/notes/:id', (req, res, next) => {
   const noteId = req.params.id;
-  knex('notes')
-    .select('id', 'title', 'content')
-    .where({'id' : `${noteId}`})
-    .then(note => res.json(note[0]))
+  knex
+  .select('notes.id', 'title', 'content', 'folder_id', 'folders.name as folder_name')
+  .from('notes')
+  .leftJoin('folders', 'notes.folder_id', 'folders.id')
+  .where('notes.id', noteId)
+  .orderBy('notes.id')
+  .then(note => {
+    res.json(note)
     .catch(err => next(err));
+
+  });
 });
+
 
 
 
